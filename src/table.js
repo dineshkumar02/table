@@ -77,13 +77,14 @@ export default (data, userConfig = {}) => {
   let rows;
 
   validateTableData(data);
-
+  
   rows = stringifyTableData(data);
 
   const config = makeConfig(rows, userConfig);
-
-  rows = truncateTableData(data, config);
-
+  
+  rows = truncateTableData(rows, config);
+  // Remove the first row which is belong to data types.
+  rows.shift();
   const rowHeightIndex = calculateRowHeightIndex(rows, config);
 
   rows = mapDataUsingRowHeightIndex(rows, rowHeightIndex, config);

@@ -6,6 +6,11 @@
  */
 export default (rows) => {
   return rows.map((cells) => {
-    return cells.map(String);
+    return cells.map((item) => {
+      if (typeof(item) == "object") {
+        return JSON.stringify(item);
+      }
+      return String(item);
+    });
   });
 };

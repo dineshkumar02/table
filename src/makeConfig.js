@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import calculateMaximumColumnWidthIndex from './calculateMaximumColumnWidthIndex';
 import getBorderCharacters from './getBorderCharacters';
+import pgDataTypes from './pgDataTypes';
 import validateConfig from './validateConfig';
 
 /**
@@ -23,23 +24,36 @@ const makeBorder = (border = {}) => {
  * @returns {object}
  */
 const makeColumns = (rows, columns = {}, columnDefault = {}) => {
+  // XXX
+  // The first row for each table data is the data type for each column
+  // Remove it from the array, and do alignment based on the data type.
+  const dataTypes = rows.shift();
   const maximumColumnWidthIndex = calculateMaximumColumnWidthIndex(rows);
+  let align='';
 
-  _.times(rows[0].length, (index) => {
-    if (_.isUndefined(columns[index])) {
-      columns[index] = {};
-    }
+    _.times(rows[0].length, (index) => {
+      if (_.isUndefined(columns[index])) {
+        columns[index] = {};
+      }
 
-    columns[index] = Object.assign({
-      alignment: 'left',
-      paddingLeft: 1,
-      paddingRight: 1,
-      truncate: Number.POSITIVE_INFINITY,
-      width: maximumColumnWidthIndex[index],
-      wrapWord: false,
-    }, columnDefault, columns[index]);
-  });
+      if (dataTypes[index] in pgDataTypes) {
+        // found data type default alignments
+        align = pgDataTypes[dataTypes[index]].align;
+      } else {
+        // unknow data type, so setting the alignment as left
+        align = 'left';
+      }
 
+      
+      columns[index] = Object.assign({
+        alignment: align,
+        paddingLeft: 1,
+        paddingRight: 1,
+        truncate: Number.POSITIVE_INFINITY,
+        width: maximumColumnWidthIndex[index],
+        wrapWord: false,
+      }, columnDefault, columns[index]);
+    });
   return columns;
 };
 
