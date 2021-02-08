@@ -36,7 +36,7 @@ module.exports =
         1083: {"name":"time","align": "left"},
         1114: {"name":"timestamp","align": "left"},
         1184: {"name":"timestamptz","align": "left"},
-        1186: {"name":"interval","align": "right"},
+        1186: {"name":"interval","align": "left"},
         1266: {"name":"timetz","align": "left"},
         1560: {"name":"bit","align": "center"},
         1562: {"name":"varbit","align": "left"},

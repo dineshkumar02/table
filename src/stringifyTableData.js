@@ -8,7 +8,7 @@ export default (rows) => {
   return rows.map((cells) => {
     return cells.map((item) => {
       if (typeof(item) == "object") {
-        return JSON.stringify(item);
+        return JSON.stringify(item, null, 2);
       }
       return String(item);
     });

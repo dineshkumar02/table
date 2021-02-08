@@ -68,25 +68,21 @@ import validateTableData from './validateTableData';
 
 /**
  * Generates a text table.
- *
+ * @param {Array[]} colTypes
+ * @param {Array[]} header
  * @param {table~row[]} data
  * @param {table~config} userConfig
  * @returns {string}
  */
-export default (data, userConfig = {}) => {
+export default (colTypes, header, data, userConfig = {}) => {
   let rows;
-
+  //Add header to the table list
+  data.unshift(header)
   validateTableData(data);
-  
   rows = stringifyTableData(data);
-
-  const config = makeConfig(rows, userConfig);
-  
+  const config = makeConfig(colTypes, rows, userConfig);
   rows = truncateTableData(rows, config);
-  // Remove the first row which is belong to data types.
-  rows.shift();
   const rowHeightIndex = calculateRowHeightIndex(rows, config);
-
   rows = mapDataUsingRowHeightIndex(rows, rowHeightIndex, config);
   rows = alignTableData(rows, config);
   rows = padTableData(rows, config);

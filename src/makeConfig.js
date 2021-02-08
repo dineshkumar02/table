@@ -23,11 +23,7 @@ const makeBorder = (border = {}) => {
  * @param {object} columnDefault
  * @returns {object}
  */
-const makeColumns = (rows, columns = {}, columnDefault = {}) => {
-  // XXX
-  // The first row for each table data is the data type for each column
-  // Remove it from the array, and do alignment based on the data type.
-  const dataTypes = rows.shift();
+const makeColumns = (colTypes, rows, columns = {}, columnDefault = {}) => {
   const maximumColumnWidthIndex = calculateMaximumColumnWidthIndex(rows);
   let align='';
 
@@ -36,14 +32,13 @@ const makeColumns = (rows, columns = {}, columnDefault = {}) => {
         columns[index] = {};
       }
 
-      if (dataTypes[index] in pgDataTypes) {
+      if (colTypes[index] in pgDataTypes) {
         // found data type default alignments
-        align = pgDataTypes[dataTypes[index]].align;
+        align = pgDataTypes[colTypes[index]].align;
       } else {
         // unknow data type, so setting the alignment as left
         align = 'left';
       }
-
       
       columns[index] = Object.assign({
         alignment: align,
@@ -65,13 +60,13 @@ const makeColumns = (rows, columns = {}, columnDefault = {}) => {
  * @param {object} userConfig
  * @returns {object}
  */
-export default (rows, userConfig = {}) => {
+export default (colTypes, rows, userConfig = {}) => {
   validateConfig('config.json', userConfig);
 
   const config = _.cloneDeep(userConfig);
 
   config.border = makeBorder(config.border);
-  config.columns = makeColumns(rows, config.columns, config.columnDefault);
+  config.columns = makeColumns(colTypes, rows, config.columns, config.columnDefault);
 
   if (!config.drawHorizontalLine) {
     /**
